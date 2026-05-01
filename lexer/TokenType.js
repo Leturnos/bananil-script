@@ -12,6 +12,9 @@ const TokenType = {
   FE: 'FE',
   E_MERMO: 'E_MERMO',
   MENTIRA: 'MENTIRA',
+  FIRMEZA: 'FIRMEZA',
+  SUAVE: 'SUAVE',
+  NERVOSO: 'NERVOSO',
 
   // Identificadores e Literais
   IDENTIFIER: 'IDENTIFIER',
@@ -56,7 +59,10 @@ const Keywords = {
   'gambiarra': TokenType.GAMBIARRA,
   'fé': TokenType.FE,
   'é_mermo': TokenType.E_MERMO,
-  'mentira': TokenType.MENTIRA
+  'mentira': TokenType.MENTIRA,
+  'firmeza': TokenType.FIRMEZA,
+  'suave': TokenType.SUAVE,
+  'nervoso': TokenType.NERVOSO
 };
 
 module.exports = { TokenType, Keywords };

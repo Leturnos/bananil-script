@@ -41,9 +41,9 @@ Vira-lata Caramelo Edition — roadmap de implementação
 - [x] `gambiarra`/`fé` (Try/Catch)
 
 ## Fase 4: Tipos e Modificadores
-- [ ] `firmeza`: Comportamento padrão.
-- [ ] `suave`: Nunca crasha, retorna `mentira` em caso de erro.
-- [ ] `nervoso`: Lança erros aleatórios (caos controlado por variável).
+- [x] `firmeza`: Comportamento padrão.
+- [x] `suave`: Nunca crasha, retorna `mentira` em caso de erro.
+- [x] `nervoso`: Lança erros aleatórios (caos controlado por variável).
 
 ## Fase 5: Modos de Execução (O Diferencial)
 - [ ] `modo: caos`: Reordenar expressões, mudar valores, delays aleatórios.

@@ -4,10 +4,19 @@ class Node {}
 class Stmt extends Node {}
 
 class VarDeclaration extends Stmt {
-  constructor(name, initializer) {
+  constructor(name, initializer, modifier = null) {
     super();
     this.name = name;
     this.initializer = initializer;
+    this.modifier = modifier;
+  }
+}
+
+class ModifierBlock extends Stmt {
+  constructor(modifier, body) {
+    super();
+    this.modifier = modifier;
+    this.body = body;
   }
 }
 
@@ -118,6 +127,7 @@ module.exports = {
   FunctionDeclaration,
   ReturnStatement,
   TryCatchStatement,
+  ModifierBlock,
   Binary,
   Literal,
   Variable,

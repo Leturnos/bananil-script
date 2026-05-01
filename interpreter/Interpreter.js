@@ -8,6 +8,7 @@ const {
   FunctionDeclaration,
   ReturnStatement,
   TryCatchStatement,
+  ModifierBlock,
   Literal, 
   Variable, 
   Call, 
@@ -108,7 +109,15 @@ class Interpreter {
     if (stmt instanceof VarDeclaration) {
       let value = null;
       if (stmt.initializer !== null) {
-        value = this.evaluate(stmt.initializer);
+        if (stmt.modifier && stmt.modifier.type === TokenType.SUAVE) {
+          try {
+            value = this.evaluate(stmt.initializer);
+          } catch (error) {
+            value = false; // suave silencia o erro e vira mentira
+          }
+        } else {
+          value = this.evaluate(stmt.initializer);
+        }
       }
       this.environment.define(stmt.name.lexeme, value);
       return null;
@@ -131,6 +140,29 @@ class Interpreter {
         }
         this.execute(stmt.body);
         iterations++;
+      }
+      return null;
+    }
+
+    if (stmt instanceof ModifierBlock) {
+      const modifierType = stmt.modifier.type;
+
+      if (modifierType === TokenType.SUAVE) {
+        try {
+          this.execute(stmt.body);
+        } catch (error) {
+          if (error instanceof Return) throw error;
+          // suave silencia o erro no bloco
+        }
+      } else if (modifierType === TokenType.NERVOSO) {
+        // Lógica nervosa: chance de erro aleatório
+        if (Math.random() < 0.3) {
+          throw new Error("mano, deu um treco aqui... o nervoso atacou! 😤\n\nno corre: principal\n\ntenta de novo aí na moral");
+        }
+        this.execute(stmt.body);
+      } else {
+        // firmeza: comportamento padrão
+        this.execute(stmt.body);
       }
       return null;
     }

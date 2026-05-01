@@ -43,6 +43,12 @@ gambiarra {
 } fé {
   anuncia("deu ruim na soma ou no x!")
 }
+
+suave {
+  anuncia(chamada_para_api_fora_do_ar())
+}
+
+jeito nervoso chance = 0.5
 ```
 
 ## 🛠️ Filosofia

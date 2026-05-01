@@ -8,6 +8,7 @@ const {
   FunctionDeclaration,
   ReturnStatement,
   TryCatchStatement,
+  ModifierBlock,
   Literal, 
   Variable, 
   Call,
@@ -58,6 +59,11 @@ class Parser {
   }
 
   varDeclaration() {
+    let modifier = null;
+    if (this.match(TokenType.FIRMEZA, TokenType.SUAVE, TokenType.NERVOSO)) {
+      modifier = this.previous();
+    }
+
     const name = this.consume(TokenType.IDENTIFIER, "Esperava nome da variável.");
 
     let initializer = null;
@@ -67,10 +73,17 @@ class Parser {
 
     // Opcional: permitir ponto e vírgula
     this.match(TokenType.SEMICOLON);
-    return new VarDeclaration(name, initializer);
+    return new VarDeclaration(name, initializer, modifier);
   }
 
   statement() {
+    if (this.match(TokenType.FIRMEZA, TokenType.SUAVE, TokenType.NERVOSO)) {
+      const modifier = this.previous();
+      this.consume(TokenType.L_BRACE, `Esperava '{' após modificador '${modifier.lexeme}'.`);
+      const body = new Block(this.block());
+      return new ModifierBlock(modifier, body);
+    }
+
     if (this.match(TokenType.GAMBIARRA)) return this.tryCatchStatement();
     if (this.match(TokenType.DEVOLVE)) return this.returnStatement();
     if (this.match(TokenType.SE_PA)) return this.ifStatement();

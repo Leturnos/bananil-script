@@ -1,0 +1,25 @@
+anuncia("--- Testando Modificador Suave em Variável ---")
+jeito suave erro = variavel_inexistente + 10
+anuncia("Valor de 'erro' (deve ser mentira):", erro)
+
+anuncia("\n--- Testando Bloco Suave ---")
+suave {
+  anuncia("Tentando dividir por zero (mentira no bananil vira 0 em JS às vezes, mas vamos forçar erro de variável)")
+  anuncia(x_que_nao_existe)
+  anuncia("Isso aqui não vai aparecer")
+}
+anuncia("Continuou o rolê depois do bloco suave!")
+
+anuncia("\n--- Testando Bloco Nervoso (chance de erro) ---")
+jeito i = 0
+enquanto der (i < 5) {
+  nervoso {
+    anuncia("Execução firmeza: ", i)
+  }
+  i = i + 1
+}
+
+anuncia("\n--- Testando Firmeza ---")
+firmeza {
+  anuncia("Aqui é papo reto, sem erro.")
+}
