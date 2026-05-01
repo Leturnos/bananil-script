@@ -1,0 +1,7 @@
+jeito i = 1
+enquanto der (i <= 5) {
+  anuncia("Contagem: ", i)
+  i = i + 1
+}
+
+anuncia("Finalizou o rolê!")

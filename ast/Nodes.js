@@ -18,8 +18,40 @@ class ExpressionStatement extends Stmt {
   }
 }
 
+class Block extends Stmt {
+  constructor(statements) {
+    super();
+    this.statements = statements;
+  }
+}
+
+class If extends Stmt {
+  constructor(condition, thenBranch, elseBranch) {
+    super();
+    this.condition = condition;
+    this.thenBranch = thenBranch;
+    this.elseBranch = elseBranch;
+  }
+}
+
+class While extends Stmt {
+  constructor(condition, body) {
+    super();
+    this.condition = condition;
+    this.body = body;
+  }
+}
+
 // Expressions (Valores)
 class Expr extends Node {}
+
+class Assign extends Expr {
+  constructor(name, value) {
+    super();
+    this.name = name;
+    this.value = value;
+  }
+}
 
 class Binary extends Expr {
   constructor(left, operator, right) {
@@ -55,8 +87,12 @@ class Call extends Expr {
 module.exports = {
   VarDeclaration,
   ExpressionStatement,
+  Block,
+  If,
+  While,
   Binary,
   Literal,
   Variable,
-  Call
+  Call,
+  Assign
 };

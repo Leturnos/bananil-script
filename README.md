@@ -20,11 +20,17 @@ npm start examples/hello.bna
 jeito frase = "salve do bananil"
 anuncia(frase)
 
-// Em breve:
-se pá (é_mermo) {
+jeito sol = é_mermo
+se pá (sol) {
   anuncia("tá suave!")
 } senao {
   anuncia("deu ruim, mas a gente dá um jeito")
+}
+
+jeito i = 1
+enquanto der (i <= 3) {
+  anuncia("repetindo ", i)
+  i = i + 1
 }
 ```
 

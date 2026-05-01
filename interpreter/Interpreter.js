@@ -1,10 +1,12 @@
 const { Environment } = require('../runtime/scope/Environment');
-const { VarDeclaration, ExpressionStatement, Literal, Variable, Call } = require('../ast/Nodes');
+const { VarDeclaration, ExpressionStatement, Block, If, While, Literal, Variable, Call, Assign, Binary } = require('../ast/Nodes');
+const { TokenType } = require('../lexer/TokenType');
 
 class Interpreter {
   constructor() {
     this.globals = new Environment();
     this.environment = this.globals;
+    this.MAX_ITERATIONS = 1000;
 
     // Registrar funções nativas
     this.globals.define("anuncia", {
@@ -44,9 +46,47 @@ class Interpreter {
       return null;
     }
 
+    if (stmt instanceof If) {
+      if (this.isTruthy(this.evaluate(stmt.condition))) {
+        this.execute(stmt.thenBranch);
+      } else if (stmt.elseBranch !== null) {
+        this.execute(stmt.elseBranch);
+      }
+      return null;
+    }
+
+    if (stmt instanceof While) {
+      let iterations = 0;
+      while (this.isTruthy(this.evaluate(stmt.condition))) {
+        if (iterations >= this.MAX_ITERATIONS) {
+          throw new Error("mano, cansei de rodar isso aqui, deu loop infinito né?\n\nno corre: principal\n\ntenta de novo aí na moral");
+        }
+        this.execute(stmt.body);
+        iterations++;
+      }
+      return null;
+    }
+
+    if (stmt instanceof Block) {
+      this.executeBlock(stmt.statements, new Environment(this.environment));
+      return null;
+    }
+
     if (stmt instanceof ExpressionStatement) {
       this.evaluate(stmt.expression);
       return null;
+    }
+  }
+
+  executeBlock(statements, environment) {
+    const previous = this.environment;
+    try {
+      this.environment = environment;
+      for (const statement of statements) {
+        this.execute(statement);
+      }
+    } finally {
+      this.environment = previous;
     }
   }
 
@@ -57,6 +97,30 @@ class Interpreter {
 
     if (expr instanceof Variable) {
       return this.environment.get(expr.name);
+    }
+
+    if (expr instanceof Assign) {
+      const value = this.evaluate(expr.value);
+      this.environment.assign(expr.name, value);
+      return value;
+    }
+
+    if (expr instanceof Binary) {
+      const left = this.evaluate(expr.left);
+      const right = this.evaluate(expr.right);
+
+      switch (expr.operator.type) {
+        case TokenType.GREATER: return left > right;
+        case TokenType.GREATER_EQUALS: return left >= right;
+        case TokenType.LESS: return left < right;
+        case TokenType.LESS_EQUALS: return left <= right;
+        case TokenType.NOT_EQUALS: return left !== right;
+        case TokenType.EQUALS: return left === right;
+        case TokenType.MINUS: return left - right;
+        case TokenType.PLUS: return left + right;
+        case TokenType.SLASH: return left / right;
+        case TokenType.STAR: return left * right;
+      }
     }
 
     if (expr instanceof Call) {
@@ -71,6 +135,12 @@ class Interpreter {
     }
 
     throw new Error("isso aqui deu ruim patrão, não sei o que é esse nó.");
+  }
+
+  isTruthy(object) {
+    if (object === null) return false;
+    if (typeof object === "boolean") return object;
+    return true;
   }
 }
 

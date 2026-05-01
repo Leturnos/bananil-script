@@ -35,8 +35,8 @@ Vira-lata Caramelo Edition — roadmap de implementação
 - [x] Implementar `anuncia()` e `vazei()`
 
 ## Fase 3: Controle de fluxo e Segurança
-- [ ] `se pá` / `senao`
-- [ ] `enquanto der` com **limite de iteração configurável**
+- [x] `se pá` / `senao`
+- [x] `enquanto der` com **limite de iteração configurável**
 - [ ] Funções (`corre`/`devolve`) e recursão
 - [ ] `gambiarra`/`fé` (Try/Catch)
 

@@ -2,10 +2,14 @@ const { TokenType } = require('../lexer/TokenType');
 const { 
   VarDeclaration, 
   ExpressionStatement, 
+  Block,
+  If,
+  While,
   Literal, 
   Variable, 
   Call,
-  Binary
+  Binary,
+  Assign
 } = require('../ast/Nodes');
 
 class Parser {
@@ -46,7 +50,44 @@ class Parser {
   }
 
   statement() {
+    if (this.match(TokenType.SE_PA)) return this.ifStatement();
+    if (this.match(TokenType.ENQUANTO_DER)) return this.whileStatement();
+    if (this.match(TokenType.L_BRACE)) return new Block(this.block());
     return this.expressionStatement();
+  }
+
+  ifStatement() {
+    this.consume(TokenType.L_PAREN, "Esperava '(' após 'se pá'.");
+    const condition = this.expression();
+    this.consume(TokenType.R_PAREN, "Esperava ')' após condição.");
+
+    const thenBranch = this.statement();
+    let elseBranch = null;
+    if (this.match(TokenType.SENAO)) {
+      elseBranch = this.statement();
+    }
+
+    return new If(condition, thenBranch, elseBranch);
+  }
+
+  whileStatement() {
+    this.consume(TokenType.L_PAREN, "Esperava '(' após 'enquanto der'.");
+    const condition = this.expression();
+    this.consume(TokenType.R_PAREN, "Esperava ')' após condição.");
+    const body = this.statement();
+
+    return new While(condition, body);
+  }
+
+  block() {
+    const statements = [];
+
+    while (!this.check(TokenType.R_BRACE) && !this.isAtEnd()) {
+      statements.push(this.declaration());
+    }
+
+    this.consume(TokenType.R_BRACE, "Esperava '}' após bloco.");
+    return statements;
   }
 
   expressionStatement() {
@@ -56,7 +97,73 @@ class Parser {
   }
 
   expression() {
-    return this.call();
+    return this.assignment();
+  }
+
+  assignment() {
+    const expr = this.equality();
+
+    if (this.match(TokenType.ASSIGN)) {
+      const equals = this.previous();
+      const value = this.assignment();
+
+      if (expr instanceof Variable) {
+        const name = expr.name;
+        return new Assign(name, value);
+      }
+
+      throw this.error(equals, "Destino da atribuição inválido.");
+    }
+
+    return expr;
+  }
+
+  equality() {
+    let expr = this.comparison();
+
+    while (this.match(TokenType.NOT_EQUALS, TokenType.EQUALS)) {
+      const operator = this.previous();
+      const right = this.comparison();
+      expr = new Binary(expr, operator, right);
+    }
+
+    return expr;
+  }
+
+  comparison() {
+    let expr = this.term();
+
+    while (this.match(TokenType.GREATER, TokenType.GREATER_EQUALS, TokenType.LESS, TokenType.LESS_EQUALS)) {
+      const operator = this.previous();
+      const right = this.term();
+      expr = new Binary(expr, operator, right);
+    }
+
+    return expr;
+  }
+
+  term() {
+    let expr = this.factor();
+
+    while (this.match(TokenType.MINUS, TokenType.PLUS)) {
+      const operator = this.previous();
+      const right = this.factor();
+      expr = new Binary(expr, operator, right);
+    }
+
+    return expr;
+  }
+
+  factor() {
+    let expr = this.call();
+
+    while (this.match(TokenType.SLASH, TokenType.STAR)) {
+      const operator = this.previous();
+      const right = this.call();
+      expr = new Binary(expr, operator, right);
+    }
+
+    return expr;
   }
 
   call() {

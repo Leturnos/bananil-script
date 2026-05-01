@@ -1,0 +1,13 @@
+jeito sol = é_mermo
+se pá (sol) {
+  anuncia("bora pra praia!")
+} senao {
+  anuncia("fica em casa maratonando")
+}
+
+jeito chuva = mentira
+se pá (chuva) {
+  anuncia("leva o guarda-chuva")
+} senao {
+  anuncia("tá tranquilo, tá favorável")
+}
