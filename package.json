@@ -1,0 +1,9 @@
+{
+  "name": "bananilscript",
+  "version": "0.1.0",
+  "description": "Vira-lata Caramelo Edition",
+  "main": "index.js",
+  "scripts": {
+    "start": "node cli/index.js"
+  }
+}
