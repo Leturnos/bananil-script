@@ -1,0 +1,19 @@
+// Teste de Funções e Recursão
+corre fatorial(n) {
+  se pá (n <= 1) {
+    devolve 1
+  }
+  devolve n * fatorial(n - 1)
+}
+
+anuncia("Fatorial de 5 é:", fatorial(5))
+
+// Teste de Gambiarra/Fé (Try/Catch)
+gambiarra {
+  anuncia("Tentando algo perigoso...")
+  anuncia(variavel_que_nao_existe)
+} fé {
+  anuncia("Deu ruim, mas a gente deu um jeito (bloco fé)")
+}
+
+anuncia("Rolê continua suave")

@@ -37,8 +37,8 @@ Vira-lata Caramelo Edition — roadmap de implementação
 ## Fase 3: Controle de fluxo e Segurança
 - [x] `se pá` / `senao`
 - [x] `enquanto der` com **limite de iteração configurável**
-- [ ] Funções (`corre`/`devolve`) e recursão
-- [ ] `gambiarra`/`fé` (Try/Catch)
+- [x] Funções (`corre`/`devolve`) e recursão
+- [x] `gambiarra`/`fé` (Try/Catch)
 
 ## Fase 4: Tipos e Modificadores
 - [ ] `firmeza`: Comportamento padrão.

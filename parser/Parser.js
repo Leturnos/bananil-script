@@ -5,6 +5,9 @@ const {
   Block,
   If,
   While,
+  FunctionDeclaration,
+  ReturnStatement,
+  TryCatchStatement,
   Literal, 
   Variable, 
   Call,
@@ -28,12 +31,30 @@ class Parser {
 
   declaration() {
     try {
+      if (this.match(TokenType.CORRE)) return this.functionDeclaration("função");
       if (this.match(TokenType.JEITO)) return this.varDeclaration();
       return this.statement();
     } catch (error) {
       this.synchronize();
       return null;
     }
+  }
+
+  functionDeclaration(kind) {
+    const name = this.consume(TokenType.IDENTIFIER, `Esperava nome da ${kind}.`);
+    this.consume(TokenType.L_PAREN, `Esperava '(' após nome da ${kind}.`);
+    
+    const parameters = [];
+    if (!this.check(TokenType.R_PAREN)) {
+      do {
+        parameters.push(this.consume(TokenType.IDENTIFIER, "Esperava nome do parâmetro."));
+      } while (this.match(TokenType.COMMA));
+    }
+    this.consume(TokenType.R_PAREN, "Esperava ')' após parâmetros.");
+
+    this.consume(TokenType.L_BRACE, `Esperava '{' antes do corpo da ${kind}.`);
+    const body = this.block();
+    return new FunctionDeclaration(name, parameters, body);
   }
 
   varDeclaration() {
@@ -50,10 +71,34 @@ class Parser {
   }
 
   statement() {
+    if (this.match(TokenType.GAMBIARRA)) return this.tryCatchStatement();
+    if (this.match(TokenType.DEVOLVE)) return this.returnStatement();
     if (this.match(TokenType.SE_PA)) return this.ifStatement();
     if (this.match(TokenType.ENQUANTO_DER)) return this.whileStatement();
     if (this.match(TokenType.L_BRACE)) return new Block(this.block());
     return this.expressionStatement();
+  }
+
+  tryCatchStatement() {
+    this.consume(TokenType.L_BRACE, "Esperava '{' após 'gambiarra'.");
+    const tryBranch = new Block(this.block());
+
+    this.consume(TokenType.FE, "Esperava 'fé' após bloco 'gambiarra'.");
+    this.consume(TokenType.L_BRACE, "Esperava '{' após 'fé'.");
+    const catchBranch = new Block(this.block());
+
+    return new TryCatchStatement(tryBranch, catchBranch);
+  }
+
+  returnStatement() {
+    const keyword = this.previous();
+    let value = null;
+    if (!this.check(TokenType.SEMICOLON)) {
+      value = this.expression();
+    }
+
+    this.match(TokenType.SEMICOLON);
+    return new ReturnStatement(keyword, value);
   }
 
   ifStatement() {

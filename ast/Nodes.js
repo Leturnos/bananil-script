@@ -42,6 +42,31 @@ class While extends Stmt {
   }
 }
 
+class FunctionDeclaration extends Stmt {
+  constructor(name, params, body) {
+    super();
+    this.name = name;
+    this.params = params;
+    this.body = body;
+  }
+}
+
+class ReturnStatement extends Stmt {
+  constructor(keyword, value) {
+    super();
+    this.keyword = keyword;
+    this.value = value;
+  }
+}
+
+class TryCatchStatement extends Stmt {
+  constructor(tryBranch, catchBranch) {
+    super();
+    this.tryBranch = tryBranch;
+    this.catchBranch = catchBranch;
+  }
+}
+
 // Expressions (Valores)
 class Expr extends Node {}
 
@@ -90,6 +115,9 @@ module.exports = {
   Block,
   If,
   While,
+  FunctionDeclaration,
+  ReturnStatement,
+  TryCatchStatement,
   Binary,
   Literal,
   Variable,

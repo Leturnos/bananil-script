@@ -32,6 +32,17 @@ enquanto der (i <= 3) {
   anuncia("repetindo ", i)
   i = i + 1
 }
+
+corre soma(a, b) {
+  devolve a + b
+}
+
+gambiarra {
+  anuncia(soma(10, 20))
+  anuncia(x) // erro!
+} fé {
+  anuncia("deu ruim na soma ou no x!")
+}
 ```
 
 ## 🛠️ Filosofia

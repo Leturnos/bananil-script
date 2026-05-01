@@ -1,6 +1,49 @@
 const { Environment } = require('../runtime/scope/Environment');
-const { VarDeclaration, ExpressionStatement, Block, If, While, Literal, Variable, Call, Assign, Binary } = require('../ast/Nodes');
+const { 
+  VarDeclaration, 
+  ExpressionStatement, 
+  Block, 
+  If, 
+  While, 
+  FunctionDeclaration,
+  ReturnStatement,
+  TryCatchStatement,
+  Literal, 
+  Variable, 
+  Call, 
+  Assign, 
+  Binary 
+} = require('../ast/Nodes');
 const { TokenType } = require('../lexer/TokenType');
+
+class Return extends Error {
+  constructor(value) {
+    super();
+    this.value = value;
+  }
+}
+
+class BananilFunction {
+  constructor(declaration, closure) {
+    this.declaration = declaration;
+    this.closure = closure;
+  }
+
+  call(interpreter, args) {
+    const environment = new Environment(this.closure);
+    for (let i = 0; i < this.declaration.params.length; i++) {
+      environment.define(this.declaration.params[i].lexeme, args[i]);
+    }
+
+    try {
+      interpreter.executeBlock(this.declaration.body, environment);
+    } catch (returnValue) {
+      if (returnValue instanceof Return) return returnValue.value;
+      throw returnValue;
+    }
+    return null;
+  }
+}
 
 class Interpreter {
   constructor() {
@@ -37,6 +80,31 @@ class Interpreter {
   }
 
   execute(stmt) {
+    if (stmt instanceof FunctionDeclaration) {
+      const functionObj = new BananilFunction(stmt, this.environment);
+      this.environment.define(stmt.name.lexeme, functionObj);
+      return null;
+    }
+
+    if (stmt instanceof ReturnStatement) {
+      let value = null;
+      if (stmt.value !== null) value = this.evaluate(stmt.value);
+      throw new Return(value);
+    }
+
+    if (stmt instanceof TryCatchStatement) {
+      try {
+        this.execute(stmt.tryBranch);
+      } catch (error) {
+        // Se for um Return, não capturamos (deixa borbulhar)
+        if (error instanceof Return) throw error;
+        
+        // Entra no bloco fé
+        this.execute(stmt.catchBranch);
+      }
+      return null;
+    }
+
     if (stmt instanceof VarDeclaration) {
       let value = null;
       if (stmt.initializer !== null) {
