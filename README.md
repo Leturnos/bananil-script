@@ -5,11 +5,13 @@ Uma linguagem de programação brasileira, resiliente e cheia de ginga. Onde o e
 
 ---
 
-## 🚀 Como rodar (em breve)
+## 🚀 Como rodar
+
+Atualmente em fase alpha, mas já latindo!
 
 ```bash
-npm install
-npm start
+# Rodar um arquivo .bna
+npm start examples/hello.bna
 ```
 
 ## 🐾 Exemplo de código
@@ -18,6 +20,7 @@ npm start
 jeito frase = "salve do bananil"
 anuncia(frase)
 
+// Em breve:
 se pá (é_mermo) {
   anuncia("tá suave!")
 } senao {
