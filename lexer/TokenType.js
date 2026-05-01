@@ -15,6 +15,7 @@ const TokenType = {
   FIRMEZA: 'FIRMEZA',
   SUAVE: 'SUAVE',
   NERVOSO: 'NERVOSO',
+  MODO: 'MODO',
 
   // Identificadores e Literais
   IDENTIFIER: 'IDENTIFIER',
@@ -33,6 +34,7 @@ const TokenType = {
   STAR: '*',
   SLASH: '/',
   SEMICOLON: ';',
+  COLON: ':',
 
   // Operadores
   ASSIGN: '=',
@@ -62,7 +64,8 @@ const Keywords = {
   'mentira': TokenType.MENTIRA,
   'firmeza': TokenType.FIRMEZA,
   'suave': TokenType.SUAVE,
-  'nervoso': TokenType.NERVOSO
+  'nervoso': TokenType.NERVOSO,
+  'modo': TokenType.MODO
 };
 
 module.exports = { TokenType, Keywords };

@@ -76,6 +76,13 @@ class TryCatchStatement extends Stmt {
   }
 }
 
+class ModeDeclaration extends Stmt {
+  constructor(mode) {
+    super();
+    this.mode = mode;
+  }
+}
+
 // Expressions (Valores)
 class Expr extends Node {}
 
@@ -128,6 +135,7 @@ module.exports = {
   ReturnStatement,
   TryCatchStatement,
   ModifierBlock,
+  ModeDeclaration,
   Binary,
   Literal,
   Variable,

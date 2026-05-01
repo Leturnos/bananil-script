@@ -9,6 +9,7 @@ const {
   ReturnStatement,
   TryCatchStatement,
   ModifierBlock,
+  ModeDeclaration,
   Literal, 
   Variable, 
   Call, 
@@ -51,12 +52,23 @@ class Interpreter {
     this.globals = new Environment();
     this.environment = this.globals;
     this.MAX_ITERATIONS = 1000;
+    this.currentMode = 'firmeza';
 
     // Registrar funções nativas
     this.globals.define("anuncia", {
       isNative: true,
       call: (interpreter, args) => {
-        console.log(...args);
+        let prefix = "";
+        if (interpreter.currentMode === 'CLT') prefix = "[PONTO BATIDO] ";
+        
+        const processedArgs = args.map(arg => {
+          if (interpreter.currentMode === 'caos' && typeof arg === 'string' && Math.random() < 0.3) {
+            return arg + " " + Math.random().toString(36).substring(7);
+          }
+          return arg;
+        });
+
+        console.log(prefix + processedArgs.join(" "));
         return null;
       }
     });
@@ -71,6 +83,11 @@ class Interpreter {
   }
 
   interpret(statements) {
+    // Detectar modo global (se houver um modo: no topo)
+    if (statements.length > 0 && statements[0] instanceof ModeDeclaration) {
+      this.currentMode = statements[0].mode.lexeme;
+    }
+
     try {
       for (const statement of statements) {
         this.execute(statement);
@@ -81,6 +98,30 @@ class Interpreter {
   }
 
   execute(stmt) {
+    if (this.currentMode === 'raiz') {
+      try {
+        this.doExecute(stmt);
+      } catch (error) {
+        if (error instanceof Return) throw error;
+        console.log("deu ruim, mas seguimos (modo raiz) 🐕");
+      }
+    } else {
+      this.doExecute(stmt);
+    }
+  }
+
+  doExecute(stmt) {
+    if (this.currentMode === 'CLT') {
+      // Simular lentidão burocrática (sync sleep fake)
+      const start = Date.now();
+      while (Date.now() - start < 50) { /* bloqueia 50ms */ }
+    }
+
+    if (stmt instanceof ModeDeclaration) {
+      this.currentMode = stmt.mode.lexeme;
+      return null;
+    }
+
     if (stmt instanceof FunctionDeclaration) {
       const functionObj = new BananilFunction(stmt, this.environment);
       this.environment.define(stmt.name.lexeme, functionObj);
@@ -107,6 +148,9 @@ class Interpreter {
     }
 
     if (stmt instanceof VarDeclaration) {
+      if (this.currentMode === 'CLT' && stmt.initializer === null) {
+        throw new Error("Mano, na CLT você tem que bater o ponto completo. Cadê o valor inicial da variável?");
+      }
       let value = null;
       if (stmt.initializer !== null) {
         if (stmt.modifier && stmt.modifier.type === TokenType.SUAVE) {
@@ -196,7 +240,12 @@ class Interpreter {
     }
 
     if (expr instanceof Variable) {
-      return this.environment.get(expr.name);
+      try {
+        return this.environment.get(expr.name);
+      } catch (error) {
+        if (this.currentMode === 'jeitinho') return 0;
+        throw error;
+      }
     }
 
     if (expr instanceof Assign) {
@@ -206,10 +255,23 @@ class Interpreter {
     }
 
     if (expr instanceof Binary) {
-      const left = this.evaluate(expr.left);
-      const right = this.evaluate(expr.right);
+      let left = this.evaluate(expr.left);
+      let right = this.evaluate(expr.right);
 
-      switch (expr.operator.type) {
+      // Modo Jeitinho: divisão por zero vira 1
+      if (this.currentMode === 'jeitinho' && expr.operator.type === TokenType.SLASH && right === 0) {
+        return 1;
+      }
+
+      let type = expr.operator.type;
+      
+      // Modo Caos: 10% de chance de trocar + por - e vice-versa
+      if (this.currentMode === 'caos' && Math.random() < 0.1) {
+        if (type === TokenType.PLUS) type = TokenType.MINUS;
+        else if (type === TokenType.MINUS) type = TokenType.PLUS;
+      }
+
+      switch (type) {
         case TokenType.GREATER: return left > right;
         case TokenType.GREATER_EQUALS: return left >= right;
         case TokenType.LESS: return left < right;

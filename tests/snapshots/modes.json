@@ -1,0 +1,34 @@
+[
+  {
+    "mode": {
+      "type": "IDENTIFIER",
+      "lexeme": "jeitinho",
+      "literal": null,
+      "line": 1
+    }
+  },
+  {
+    "expression": {
+      "name": {
+        "type": "IDENTIFIER",
+        "lexeme": "x",
+        "literal": null,
+        "line": 1
+      },
+      "value": {
+        "left": {
+          "value": 1
+        },
+        "operator": {
+          "type": "/",
+          "lexeme": "/",
+          "literal": null,
+          "line": 1
+        },
+        "right": {
+          "value": 0
+        }
+      }
+    }
+  }
+]

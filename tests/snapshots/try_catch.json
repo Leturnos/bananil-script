@@ -1,0 +1,38 @@
+[
+  {
+    "tryBranch": {
+      "statements": [
+        {
+          "expression": {
+            "name": {
+              "type": "IDENTIFIER",
+              "lexeme": "x",
+              "literal": null,
+              "line": 1
+            },
+            "value": {
+              "value": 1
+            }
+          }
+        }
+      ]
+    },
+    "catchBranch": {
+      "statements": [
+        {
+          "expression": {
+            "name": {
+              "type": "IDENTIFIER",
+              "lexeme": "y",
+              "literal": null,
+              "line": 1
+            },
+            "value": {
+              "value": 2
+            }
+          }
+        }
+      ]
+    }
+  }
+]

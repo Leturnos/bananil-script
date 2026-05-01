@@ -9,6 +9,7 @@ const {
   ReturnStatement,
   TryCatchStatement,
   ModifierBlock,
+  ModeDeclaration,
   Literal, 
   Variable, 
   Call,
@@ -32,6 +33,7 @@ class Parser {
 
   declaration() {
     try {
+      if (this.match(TokenType.MODO)) return this.modeDeclaration();
       if (this.match(TokenType.CORRE)) return this.functionDeclaration("função");
       if (this.match(TokenType.JEITO)) return this.varDeclaration();
       return this.statement();
@@ -56,6 +58,13 @@ class Parser {
     this.consume(TokenType.L_BRACE, `Esperava '{' antes do corpo da ${kind}.`);
     const body = this.block();
     return new FunctionDeclaration(name, parameters, body);
+  }
+
+  modeDeclaration() {
+    this.consume(TokenType.COLON, "Esperava ':' após 'modo'.");
+    const mode = this.consume(TokenType.IDENTIFIER, "Esperava nome do modo (ex: caos, jeitinho, CLT, raiz).");
+    this.match(TokenType.SEMICOLON);
+    return new ModeDeclaration(mode);
   }
 
   varDeclaration() {

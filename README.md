@@ -49,6 +49,9 @@ suave {
 }
 
 jeito nervoso chance = 0.5
+
+modo: jeitinho
+anuncia(10 / 0) // resulta em 1
 ```
 
 ## 🛠️ Filosofia

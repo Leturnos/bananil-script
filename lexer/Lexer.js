@@ -44,6 +44,7 @@ class Lexer {
       case '-': this.addToken(TokenType.MINUS); break;
       case '+': this.addToken(TokenType.PLUS); break;
       case '*': this.addToken(TokenType.STAR); break;
+      case ':': this.addToken(TokenType.COLON); break;
       case '/':
         if (this.match('/')) {
           // Um comentário vai até o fim da linha

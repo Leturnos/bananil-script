@@ -46,13 +46,13 @@ Vira-lata Caramelo Edition — roadmap de implementação
 - [x] `nervoso`: Lança erros aleatórios (caos controlado por variável).
 
 ## Fase 5: Modos de Execução (O Diferencial)
-- [ ] `modo: caos`: Reordenar expressões, mudar valores, delays aleatórios.
-- [ ] `modo: jeitinho` (Regras claras):
+- [x] `modo: caos`: Reordenar expressões, mudar valores, delays aleatórios.
+- [x] `modo: jeitinho` (Regras claras):
   - `undefined` → `0`
   - Divisão por zero → `1`
   - `null access` → ignora/silencia
-- [ ] `modo: CLT`: Log de ponto obrigatório, lentidão e burocracia.
-- [ ] `modo: raiz` (Vira-lata Raiz):
+- [x] `modo: CLT`: Log de ponto obrigatório, lentidão e burocracia.
+- [x] `modo: raiz` (Vira-lata Raiz):
   - Ignora qualquer padrão.
   - Tenta sobreviver a qualquer código (o "eterno try-catch" implícito).
   - Nunca crasha, sempre "dá um jeito".
@@ -70,9 +70,9 @@ Vira-lata Caramelo Edition — roadmap de implementação
 
 ## Fase 7: Qualidade e Testes
 - [x] Testes unitários (Lexer, Parser, Interpreter).
-- [ ] **Snapshot tests do AST** (garantir que mudanças no parser não quebrem a árvore).
-- [ ] Testes de estresse dos modos (`caos`, `raiz`).
-- [ ] Testes de casos edge (precisão numérica, estouro de pilha).
+- [x] **Snapshot tests do AST** (garantir que mudanças no parser não quebrem a árvore).
+- [x] Testes de estresse dos modos (`caos`, `raiz`).
+- [x] Testes de casos edge (precisão numérica, estouro de pilha).
 
 ## Fase 8: CLI e Experiência
 - [x] `bananil run <arquivo>.bna`

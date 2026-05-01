@@ -1,0 +1,23 @@
+modo: jeitinho
+
+anuncia("--- Teste de Modo Jeitinho ---")
+anuncia("Variável inexistente:", variavel_que_nao_existe)
+anuncia("10 / 0 =", 10 / 0)
+
+modo: CLT
+anuncia("--- Teste de Modo CLT ---")
+jeito x = "trabalho"
+anuncia("Variável declarada:", x)
+
+modo: raiz
+anuncia("--- Teste de Modo Raiz ---")
+anuncia(10 + "texto que quebra")
+anuncia("Ainda estou aqui!")
+
+modo: caos
+anuncia("--- Teste de Modo Caos ---")
+jeito i = 0
+enquanto der (i < 10) {
+  anuncia("Contagem caótica:", i + 1)
+  i = i + 1
+}

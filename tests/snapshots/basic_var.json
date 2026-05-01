@@ -1,0 +1,14 @@
+[
+  {
+    "name": {
+      "type": "IDENTIFIER",
+      "lexeme": "x",
+      "literal": null,
+      "line": 1
+    },
+    "initializer": {
+      "value": 10
+    },
+    "modifier": null
+  }
+]

@@ -1,0 +1,58 @@
+[
+  {
+    "name": {
+      "type": "IDENTIFIER",
+      "lexeme": "soma",
+      "literal": null,
+      "line": 1
+    },
+    "params": [
+      {
+        "type": "IDENTIFIER",
+        "lexeme": "a",
+        "literal": null,
+        "line": 1
+      },
+      {
+        "type": "IDENTIFIER",
+        "lexeme": "b",
+        "literal": null,
+        "line": 1
+      }
+    ],
+    "body": [
+      {
+        "keyword": {
+          "type": "DEVOLVE",
+          "lexeme": "devolve",
+          "literal": null,
+          "line": 1
+        },
+        "value": {
+          "left": {
+            "name": {
+              "type": "IDENTIFIER",
+              "lexeme": "a",
+              "literal": null,
+              "line": 1
+            }
+          },
+          "operator": {
+            "type": "+",
+            "lexeme": "+",
+            "literal": null,
+            "line": 1
+          },
+          "right": {
+            "name": {
+              "type": "IDENTIFIER",
+              "lexeme": "b",
+              "literal": null,
+              "line": 1
+            }
+          }
+        }
+      }
+    ]
+  }
+]

@@ -9,21 +9,30 @@ function main() {
 
   if (args.length === 0) {
     console.log("🐕 BananilScript - Vira-lata Caramelo Edition");
-    console.log("Uso: bananil <arquivo.bna>");
+    console.log("Uso: bananil <arquivo.bna> [--modo=caos|jeitinho|CLT|raiz]");
     return;
   }
 
-  const filePath = path.resolve(args[0]);
-  if (!fs.existsSync(filePath)) {
-    console.error(`Erro: O arquivo '${args[0]}' não foi encontrado.`);
+  const filePathArg = args.find(arg => !arg.startsWith('--'));
+  if (!filePathArg) {
+    console.error("Erro: Nenhum arquivo especificado.");
     return;
   }
+
+  const filePath = path.resolve(filePathArg);
+  if (!fs.existsSync(filePath)) {
+    console.error(`Erro: O arquivo '${filePathArg}' não foi encontrado.`);
+    return;
+  }
+
+  const modoArg = args.find(arg => arg.startsWith('--modo='));
+  const modo = modoArg ? modoArg.split('=')[1] : null;
 
   const source = fs.readFileSync(filePath, 'utf8');
-  run(source);
+  run(source, modo);
 }
 
-function run(source) {
+function run(source, modo) {
   const lexer = new Lexer(source);
   const tokens = lexer.tokenize();
 
@@ -34,6 +43,9 @@ function run(source) {
   if (!statements || statements.some(s => s === null)) return;
 
   const interpreter = new Interpreter();
+  if (modo) {
+    interpreter.currentMode = modo;
+  }
   interpreter.interpret(statements);
 }
 

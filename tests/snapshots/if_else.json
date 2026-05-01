@@ -1,0 +1,49 @@
+[
+  {
+    "condition": {
+      "value": true
+    },
+    "thenBranch": {
+      "statements": [
+        {
+          "expression": {
+            "callee": {
+              "name": {
+                "type": "ANUNCIA",
+                "lexeme": "anuncia",
+                "literal": null,
+                "line": 1
+              }
+            },
+            "args": [
+              {
+                "value": 1
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "elseBranch": {
+      "statements": [
+        {
+          "expression": {
+            "callee": {
+              "name": {
+                "type": "ANUNCIA",
+                "lexeme": "anuncia",
+                "literal": null,
+                "line": 1
+              }
+            },
+            "args": [
+              {
+                "value": 0
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+]
