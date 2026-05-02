@@ -78,5 +78,5 @@ Vira-lata Caramelo Edition — roadmap de implementação
 - [x] `bananil run <arquivo.bna>`
 - [x] `bananil check <arquivo.bna>`
 - [x] **REPL: `bananil repl`** (Interativo e divertido).
-- [ ] Extensão VSCode e README (O Guia da Gambiarra).
+- [x] Extensão VSCode e README (O Guia da Gambiarra).
 

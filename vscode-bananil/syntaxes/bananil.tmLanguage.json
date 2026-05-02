@@ -1,0 +1,60 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "BananilScript",
+  "patterns": [
+    {
+      "include": "#comments"
+    },
+    {
+      "include": "#keywords"
+    },
+    {
+      "include": "#strings"
+    },
+    {
+      "include": "#numbers"
+    }
+  ],
+  "repository": {
+    "comments": {
+      "patterns": [
+        {
+          "name": "comment.line.double-slash.bananil",
+          "match": "//.*$"
+        }
+      ]
+    },
+    "keywords": {
+      "patterns": [
+        {
+          "name": "keyword.control.bananil",
+          "match": "\\b(jeito|se pá|senao|enquanto der|corre|devolve|anuncia|vazei|gambiarra|fé|mentira|é_mermo|modo)\\b"
+        },
+        {
+          "name": "storage.modifier.bananil",
+          "match": "\\b(firmeza|suave|nervoso)\\b"
+        }
+      ]
+    },
+    "strings": {
+      "name": "string.quoted.double.bananil",
+      "begin": "\"",
+      "end": "\"",
+      "patterns": [
+        {
+          "name": "constant.character.escape.bananil",
+          "match": "\\\\."
+        }
+      ]
+    },
+    "numbers": {
+      "patterns": [
+        {
+          "name": "constant.numeric.bananil",
+          "match": "\\b\\d+(\\.\\d+)?\\b"
+        }
+      ]
+    }
+  },
+  "scopeName": "source.bananil"
+}

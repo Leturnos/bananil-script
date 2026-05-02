@@ -11,8 +11,30 @@ Atualmente em fase alpha, mas já latindo!
 
 ```bash
 # Rodar um arquivo .bna
-npm start examples/hello.bna
+npm start run examples/ola.bna
+
+# Validar sintaxe (bom para CI)
+npm start check examples/ola.bna
+
+# Modo interativo (REPL)
+npm start repl
 ```
+
+## 🛠️ Tooling
+
+### Validador de Sintaxe (`check`)
+O comando `check` analisa o código e retorna:
+- `exit 0`: Se o código estiver nos trinks.
+- `exit 1`: Se a gramática estiver capenga.
+
+### REPL Interativo
+Experimente o BananilScript em tempo real. Suporta multi-linha usando chaves `{}` e é resiliente a erros de digitação.
+
+### Extensão VSCode
+Para ter syntax highlighting:
+1. Copie a pasta `vscode-bananil` para `~/.vscode/extensions/` (Linux/macOS) ou `%USERPROFILE%\.vscode\extensions\` (Windows).
+2. Reinicie o VSCode.
+3. Aproveite as cores da gambiarra!
 
 ## 🐾 Exemplo de código
 

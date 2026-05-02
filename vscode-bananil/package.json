@@ -1,0 +1,35 @@
+{
+  "name": "BananilScript",
+  "displayName": "BananilScript Language Support",
+  "description": "Syntax highlighting for BananilScript (Vira-lata Caramelo Edition)",
+  "version": "0.1.0",
+  "publisher": "bananil",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [
+      {
+        "id": "bananil",
+        "aliases": [
+          "BananilScript",
+          "bananil"
+        ],
+        "extensions": [
+          ".bna"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "grammars": [
+      {
+        "language": "bananil",
+        "scopeName": "source.bananil",
+        "path": "./syntaxes/bananil.tmLanguage.json"
+      }
+    ]
+  }
+}
