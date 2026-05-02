@@ -322,6 +322,7 @@ class Parser {
   error(token, message) {
     const msg = `[Linha ${token.line}] Erro no '${token.lexeme}': ${message}`;
     console.error(msg);
+    this.hadError = true;
     return new Error(msg);
   }
 
@@ -346,3 +347,4 @@ class Parser {
 }
 
 module.exports = { Parser };
+
