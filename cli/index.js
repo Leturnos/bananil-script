@@ -3,6 +3,7 @@ const path = require('path');
 const { Lexer } = require('../lexer/Lexer');
 const { Parser } = require('../parser/Parser');
 const { Interpreter } = require('../interpreter/Interpreter');
+const { startRepl } = require('./repl');
 
 function main() {
   const args = process.argv.slice(2);
@@ -18,6 +19,8 @@ function main() {
     handleCheck(args.slice(1));
   } else if (command === "run") {
     handleRun(args.slice(1));
+  } else if (command === "repl") {
+    startRepl();
   } else if (args[0].endsWith('.bna')) {
     // Retrocompatibilidade: bananil arquivo.bna
     handleRun(args);
@@ -33,6 +36,7 @@ function printHelp() {
   console.log("Uso:");
   console.log("  bananil run <arquivo.bna> [--modo=caos|jeitinho|CLT|raiz]");
   console.log("  bananil check <arquivo.bna>");
+  console.log("  bananil repl");
 }
 
 function handleCheck(args) {

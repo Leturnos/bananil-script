@@ -77,6 +77,6 @@ Vira-lata Caramelo Edition — roadmap de implementação
 ## Fase 8: CLI e Experiência
 - [x] `bananil run <arquivo.bna>`
 - [x] `bananil check <arquivo.bna>`
-- [ ] **REPL: `bananil repl`** (Interativo e divertido).
+- [x] **REPL: `bananil repl`** (Interativo e divertido).
 - [ ] Extensão VSCode e README (O Guia da Gambiarra).
 
