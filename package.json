@@ -4,11 +4,18 @@
   "description": "Vira-lata Caramelo Edition",
   "main": "index.js",
   "scripts": {
-    "start": "node cli/index.js"
+    "start": "node cli/index.js",
+    "check": "node cli/index.js check",
+    "repl": "node cli/index.js repl",
+    "test": "jest",
+    "test:watch": "jest --watch"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
     "diff": "^9.0.0",
     "dotenv": "^17.4.2"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0"
   }
 }
