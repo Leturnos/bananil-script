@@ -58,7 +58,7 @@ Vira-lata Caramelo Edition — roadmap de implementação
   - Nunca crasha, sempre "dá um jeito".
 
 ## Fase 6: Integração com IA
-- [ ] Contrato `AIAdapter` atualizado:
+- [x] Contrato `AIAdapter` atualizado:
   ```typescript
   interface AIAdapter {
     explainError(error: any, context: string): Promise<string>;
@@ -66,7 +66,9 @@ Vira-lata Caramelo Edition — roadmap de implementação
     parseNaturalLanguage(input: string): Promise<AST>;
   }
   ```
-- [ ] Integração de "Auto-gambiarra" via IA.
+- [x] Integração de "Auto-gambiarra" via IA (flag `--auto-fix`).
+- [x] Gate de validação e exibição de diff visual.
+- [x] Geração de arquivos `.gambiarra.bna` com metadados.
 
 ## Fase 7: Qualidade e Testes
 - [x] Testes unitários (Lexer, Parser, Interpreter).
