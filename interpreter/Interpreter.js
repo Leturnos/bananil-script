@@ -1,4 +1,7 @@
 const { Environment } = require('../runtime/scope/Environment');
+const BananilErrorHandler = require('../runtime/errors/BananilErrorHandler');
+const ModeManager = require('../runtime/modes/ModeManager');
+const Modifiers = require('../runtime/types/Modifiers');
 const { 
   VarDeclaration, 
   ExpressionStatement, 
@@ -103,7 +106,7 @@ class Interpreter {
         
         this.errorCount++;
         if (this.errorCount > 100) {
-          throw new Error("mano, o modo raiz saiu do controle! Muitos erros seguidos.\n\nno corre: principal\n\ntenta de novo aí na moral");
+          throw BananilErrorHandler.tooManyErrorsRootMode();
         }
         
         console.log("deu ruim, mas seguimos (modo raiz) 🐕");
@@ -115,11 +118,7 @@ class Interpreter {
   }
 
   doExecute(stmt) {
-    if (this.currentMode === 'CLT') {
-      // Simular lentidão burocrática (sync sleep fake)
-      const start = Date.now();
-      while (Date.now() - start < 50) { /* bloqueia 50ms */ }
-    }
+    ModeManager.applyCLTSleep(this.currentMode);
 
     if (stmt instanceof ModeDeclaration) {
       this.currentMode = stmt.mode.lexeme;
@@ -152,11 +151,10 @@ class Interpreter {
     }
 
     if (stmt instanceof VarDeclaration) {
-      if (this.currentMode === 'CLT' && stmt.initializer === null) {
-        throw new Error("Mano, na CLT você tem que bater o ponto completo. Cadê o valor inicial da variável?");
-      }
       let value = null;
-      if (stmt.initializer !== null) {
+      if (stmt.initializer === null) {
+        value = ModeManager.handleUninitializedVar(this.currentMode);
+      } else {
         if (stmt.modifier && stmt.modifier.type === TokenType.SUAVE) {
           try {
             value = this.evaluate(stmt.initializer);
@@ -184,7 +182,7 @@ class Interpreter {
       let iterations = 0;
       while (this.isTruthy(this.evaluate(stmt.condition))) {
         if (iterations >= this.MAX_ITERATIONS) {
-          throw new Error("mano, cansei de rodar isso aqui, deu loop infinito né?\n\nno corre: principal\n\ntenta de novo aí na moral");
+          throw BananilErrorHandler.infiniteLoop();
         }
         this.execute(stmt.body);
         iterations++;
@@ -193,25 +191,7 @@ class Interpreter {
     }
 
     if (stmt instanceof ModifierBlock) {
-      const modifierType = stmt.modifier.type;
-
-      if (modifierType === TokenType.SUAVE) {
-        try {
-          this.execute(stmt.body);
-        } catch (error) {
-          if (error instanceof Return) throw error;
-          // suave silencia o erro no bloco
-        }
-      } else if (modifierType === TokenType.NERVOSO) {
-        // Lógica nervosa: chance de erro aleatório
-        if (Math.random() < 0.3) {
-          throw new Error("mano, deu um treco aqui... o nervoso atacou! 😤\n\nno corre: principal\n\ntenta de novo aí na moral");
-        }
-        this.execute(stmt.body);
-      } else {
-        // firmeza: comportamento padrão
-        this.execute(stmt.body);
-      }
+      Modifiers.executeModifierBlock(stmt.modifier.type, () => this.execute(stmt.body), Return);
       return null;
     }
 
@@ -264,17 +244,10 @@ class Interpreter {
 
       // Tratamento de Divisão por Zero
       if (expr.operator.type === TokenType.SLASH && right === 0) {
-        if (this.currentMode === 'jeitinho') return 1;
-        throw new Error(`mano, tentou dividir por zero? aí não dá né...\n\nno corre: principal (linha ${expr.operator.line})\n\ntenta de novo aí na moral`);
+        return ModeManager.handleDivisionByZero(this.currentMode, expr.operator.line);
       }
 
-      let type = expr.operator.type;
-      
-      // Modo Caos: 10% de chance de trocar + por - e vice-versa
-      if (this.currentMode === 'caos' && Math.random() < 0.1) {
-        if (type === TokenType.PLUS) type = TokenType.MINUS;
-        else if (type === TokenType.MINUS) type = TokenType.PLUS;
-      }
+      let type = ModeManager.modifyOperator(this.currentMode, expr.operator.type);
 
       switch (type) {
         case TokenType.GREATER: return left > right;
@@ -295,13 +268,13 @@ class Interpreter {
       const args = expr.args.map(arg => this.evaluate(arg));
 
       if (typeof callee.call !== 'function') {
-        throw new Error("isso aqui não dá pra chamar não, patrão.");
+        throw BananilErrorHandler.notCallable();
       }
 
       return callee.call(this, args);
     }
 
-    throw new Error("isso aqui deu ruim patrão, não sei o que é esse nó.");
+    throw BananilErrorHandler.unknownNode();
   }
 
   isTruthy(object) {
@@ -311,4 +284,4 @@ class Interpreter {
   }
 }
 
-module.exports = { Interpreter };
+module.exports = { Interpreter, Return };
