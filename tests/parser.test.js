@@ -1,48 +1,38 @@
-const assert = require('node:assert');
 const { Lexer } = require('../lexer/Lexer');
 const { Parser } = require('../parser/Parser');
-const { VarDeclaration, ExpressionStatement, Call, Literal } = require('../ast/Nodes');
+const { VarDeclaration, ExpressionStatement, Call } = require('../ast/Nodes');
 
-function testParser() {
-  console.log("🧪 Testando Parser...");
+describe('Parser Tests', () => {
+  test('Parsing básico de variáveis e chamadas de função', () => {
+    const source = `
+      jeito x = "bananil"
+      anuncia(x)
+    `;
 
-  const source = `
-    jeito x = "bananil"
-    anuncia(x)
-  `;
+    const lexer = new Lexer(source);
+    const tokens = lexer.tokenize();
+    const parser = new Parser(tokens);
+    const ast = parser.parse();
 
-  const lexer = new Lexer(source);
-  const tokens = lexer.tokenize();
-  const parser = new Parser(tokens);
-  const ast = parser.parse();
+    expect(ast.length).toBe(2);
+    
+    expect(ast[0]).toBeInstanceOf(VarDeclaration);
+    expect(ast[0].name.lexeme).toBe("x");
+    expect(ast[0].initializer.value).toBe("bananil");
 
-  // Verificações
-  assert.strictEqual(ast.length, 2, "Deveria ter 2 statements.");
-  
-  // Teste VarDeclaration
-  assert.ok(ast[0] instanceof VarDeclaration, "Primeiro deveria ser VarDeclaration");
-  assert.strictEqual(ast[0].name.lexeme, "x");
-  assert.strictEqual(ast[0].initializer.value, "bananil");
+    expect(ast[1]).toBeInstanceOf(ExpressionStatement);
+    expect(ast[1].expression).toBeInstanceOf(Call);
+    expect(ast[1].expression.callee.name.lexeme).toBe("anuncia");
+  });
 
-  // Teste Call (ExpressionStatement)
-  assert.ok(ast[1] instanceof ExpressionStatement, "Segundo deveria ser ExpressionStatement");
-  assert.ok(ast[1].expression instanceof Call, "Deveria conter um Call");
-  assert.strictEqual(ast[1].expression.callee.name.lexeme, "anuncia");
-
-  console.log("✅ Parser passou nos testes básicos!");
-  
-  // Visualização simples
-  console.log("\nEstrutura da AST:");
-  console.log(JSON.stringify(ast, (key, value) => {
-    if (key === 'tokens' || key === 'line') return undefined;
-    return value;
-  }, 2));
-}
-
-try {
-  testParser();
-} catch (error) {
-  console.error("❌ Falha no teste do Parser:");
-  console.error(error.message);
-  process.exit(1);
-}
+  test('Parsing de expressões matemáticas com precedência', () => {
+    const source = "jeito x = 1 + 2 * 3";
+    const lexer = new Lexer(source);
+    const parser = new Parser(lexer.tokenize());
+    const ast = parser.parse();
+    
+    // x = (1 + (2 * 3))
+    expect(ast[0].initializer.operator.lexeme).toBe("+");
+    expect(ast[0].initializer.right.operator.lexeme).toBe("*");
+  });
+});

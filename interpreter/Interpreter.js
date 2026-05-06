@@ -53,6 +53,7 @@ class Interpreter {
     this.environment = this.globals;
     this.MAX_ITERATIONS = 1000;
     this.currentMode = 'firmeza';
+    this.errorCount = 0; // Contador de erros para o modo raiz
 
     // Registrar funções nativas
     this.globals.define("anuncia", {
@@ -83,11 +84,6 @@ class Interpreter {
   }
 
   interpret(statements) {
-    // Detectar modo global (se houver um modo: no topo)
-    if (statements.length > 0 && statements[0] instanceof ModeDeclaration) {
-      this.currentMode = statements[0].mode.lexeme;
-    }
-
     try {
       for (const statement of statements) {
         this.execute(statement);
@@ -101,12 +97,20 @@ class Interpreter {
     if (this.currentMode === 'raiz') {
       try {
         this.doExecute(stmt);
+        this.errorCount = 0; // Sucesso! Reseta o contador
       } catch (error) {
         if (error instanceof Return) throw error;
+        
+        this.errorCount++;
+        if (this.errorCount > 100) {
+          throw new Error("mano, o modo raiz saiu do controle! Muitos erros seguidos.\n\nno corre: principal\n\ntenta de novo aí na moral");
+        }
+        
         console.log("deu ruim, mas seguimos (modo raiz) 🐕");
       }
     } else {
       this.doExecute(stmt);
+      this.errorCount = 0;
     }
   }
 
@@ -258,9 +262,10 @@ class Interpreter {
       let left = this.evaluate(expr.left);
       let right = this.evaluate(expr.right);
 
-      // Modo Jeitinho: divisão por zero vira 1
-      if (this.currentMode === 'jeitinho' && expr.operator.type === TokenType.SLASH && right === 0) {
-        return 1;
+      // Tratamento de Divisão por Zero
+      if (expr.operator.type === TokenType.SLASH && right === 0) {
+        if (this.currentMode === 'jeitinho') return 1;
+        throw new Error(`mano, tentou dividir por zero? aí não dá né...\n\nno corre: principal (linha ${expr.operator.line})\n\ntenta de novo aí na moral`);
       }
 
       let type = expr.operator.type;

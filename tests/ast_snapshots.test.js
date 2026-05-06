@@ -14,7 +14,6 @@ function runSnapshotTest(testName, code) {
   const ast = parser.parse();
   
   const serializedAst = JSON.stringify(ast, (key, value) => {
-    // Remover referências circulares ou tokens complexos se necessário para o snapshot
     if (key === 'tokens' || key === 'current') return undefined;
     return value;
   }, 2);
@@ -22,40 +21,31 @@ function runSnapshotTest(testName, code) {
   const snapshotPath = getSnapshotPath(testName);
 
   if (!fs.existsSync(path.dirname(snapshotPath))) {
-    fs.mkdirSync(path.dirname(snapshotPath));
+    fs.mkdirSync(path.dirname(snapshotPath), { recursive: true });
   }
 
   if (!fs.existsSync(snapshotPath)) {
     fs.writeFileSync(snapshotPath, serializedAst);
-    console.log(`📸 Snapshot criado para: ${testName}`);
     return true;
   }
 
   const existingSnapshot = fs.readFileSync(snapshotPath, 'utf-8');
-  if (existingSnapshot === serializedAst) {
-    console.log(`✅ Snapshot condizente: ${testName}`);
-    return true;
-  } else {
-    console.error(`❌ Regressão detectada na AST para: ${testName}`);
-    console.error("Diferença encontrada entre o snapshot e a AST atual.");
-    // Em um ambiente de teste real, usaríamos um diff engine aqui
-    return false;
-  }
+  return existingSnapshot === serializedAst;
 }
 
-console.log("🚀 Iniciando Snapshot Tests da AST...");
+describe('AST Snapshot Tests', () => {
+  const tests = {
+    "basic_var": "jeito x = 10;",
+    "function_def": "corre soma(a, b) { devolve a + b; }",
+    "if_else": "se pá (é_mermo) { anuncia(1); } senao { anuncia(0); }",
+    "try_catch": "gambiarra { x = 1; } fé { y = 2; }",
+    "modes": "modo: jeitinho; x = 1 / 0;"
+  };
 
-const tests = {
-  "basic_var": "jeito x = 10;",
-  "function_def": "corre soma(a, b) { devolve a + b; }",
-  "if_else": "se pá (é_mermo) { anuncia(1); } senao { anuncia(0); }",
-  "try_catch": "gambiarra { x = 1; } fé { y = 2; }",
-  "modes": "modo: jeitinho; x = 1 / 0;"
-};
-
-let allPassed = true;
-for (const [name, code] of Object.entries(tests)) {
-  if (!runSnapshotTest(name, code)) allPassed = false;
-}
-
-if (!allPassed) process.exit(1);
+  Object.entries(tests).forEach(([name, code]) => {
+    test(`Snapshot for ${name}`, () => {
+      const result = runSnapshotTest(name, code);
+      expect(result).toBe(true);
+    });
+  });
+});
