@@ -5,5 +5,10 @@
   "main": "index.js",
   "scripts": {
     "start": "node cli/index.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "diff": "^9.0.0",
+    "dotenv": "^17.4.2"
   }
 }
