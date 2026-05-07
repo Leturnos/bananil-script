@@ -40,11 +40,18 @@ class BananilFunction {
       environment.define(this.declaration.params[i].lexeme, args[i]);
     }
 
+    interpreter.callDepth++;
+    if (interpreter.callDepth > 50 && interpreter.currentMode === 'clt') {
+      throw BananilErrorHandler.recursionLimitCLT();
+    }
+
     try {
       interpreter.executeBlock(this.declaration.body, environment);
     } catch (returnValue) {
       if (returnValue instanceof Return) return returnValue.value;
       throw returnValue;
+    } finally {
+      interpreter.callDepth--;
     }
     return null;
   }
@@ -57,21 +64,13 @@ class Interpreter {
     this.MAX_ITERATIONS = 1000;
     this.currentMode = 'firmeza';
     this.errorCount = 0; // Contador de erros para o modo raiz
+    this.callDepth = 0; // Controle de recursão
 
     // Registrar funções nativas
     this.globals.define("anuncia", {
       isNative: true,
       call: (interpreter, args) => {
-        let prefix = "";
-        if (interpreter.currentMode === 'CLT') prefix = "[PONTO BATIDO] ";
-        
-        const processedArgs = args.map(arg => {
-          if (interpreter.currentMode === 'caos' && typeof arg === 'string' && Math.random() < 0.3) {
-            return arg + " " + Math.random().toString(36).substring(7);
-          }
-          return arg;
-        });
-
+        const { prefix, processedArgs } = ModeManager.modifyAnnounceArgs(interpreter.currentMode, args);
         console.log(prefix + processedArgs.join(" "));
         return null;
       }
@@ -97,31 +96,14 @@ class Interpreter {
   }
 
   execute(stmt) {
-    if (this.currentMode === 'raiz') {
-      try {
-        this.doExecute(stmt);
-        this.errorCount = 0; // Sucesso! Reseta o contador
-      } catch (error) {
-        if (error instanceof Return) throw error;
-        
-        this.errorCount++;
-        if (this.errorCount > 100) {
-          throw BananilErrorHandler.tooManyErrorsRootMode();
-        }
-        
-        console.log("deu ruim, mas seguimos (modo raiz) 🐕");
-      }
-    } else {
-      this.doExecute(stmt);
-      this.errorCount = 0;
-    }
+    ModeManager.handleExecution(this, stmt, (s) => this.doExecute(s));
   }
 
   doExecute(stmt) {
     ModeManager.applyCLTSleep(this.currentMode);
 
     if (stmt instanceof ModeDeclaration) {
-      this.currentMode = stmt.mode.lexeme;
+      this.currentMode = stmt.mode.lexeme.toLowerCase();
       return null;
     }
 
@@ -153,17 +135,9 @@ class Interpreter {
     if (stmt instanceof VarDeclaration) {
       let value = null;
       if (stmt.initializer === null) {
-        value = ModeManager.handleUninitializedVar(this.currentMode);
+        value = ModeManager.handleUninitializedVar(this.currentMode, stmt.name.line, stmt.name.lexeme);
       } else {
-        if (stmt.modifier && stmt.modifier.type === TokenType.SUAVE) {
-          try {
-            value = this.evaluate(stmt.initializer);
-          } catch (error) {
-            value = false; // suave silencia o erro e vira mentira
-          }
-        } else {
-          value = this.evaluate(stmt.initializer);
-        }
+        value = Modifiers.evaluateVarDeclaration(stmt.modifier, () => this.evaluate(stmt.initializer));
       }
       this.environment.define(stmt.name.lexeme, value);
       return null;
@@ -182,6 +156,9 @@ class Interpreter {
       let iterations = 0;
       while (this.isTruthy(this.evaluate(stmt.condition))) {
         if (iterations >= this.MAX_ITERATIONS) {
+          if (this.currentMode === 'clt') {
+            throw BananilErrorHandler.infiniteLoopCLT();
+          }
           throw BananilErrorHandler.infiniteLoop();
         }
         this.execute(stmt.body);
@@ -227,8 +204,7 @@ class Interpreter {
       try {
         return this.environment.get(expr.name);
       } catch (error) {
-        if (this.currentMode === 'jeitinho') return 0;
-        throw error;
+        return ModeManager.handleMissingVariable(this.currentMode, error);
       }
     }
 

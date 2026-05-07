@@ -46,9 +46,12 @@ async function startRepl(args = []) {
   rl.on('line', async (line) => {
     buffer += line + "\n";
 
-    openBraces += (line.match(/{/g) || []).length;
-    openBraces -= (line.match(/}/g) || []).length;
+    // Conta chaves abertas e fechadas na linha atual
+    const opened = (line.match(/{/g) || []).length;
+    const closed = (line.match(/}/g) || []).length;
+    openBraces += opened - closed;
 
+    // Se as chaves se fecharem (ou se nunca abriram), executa o buffer
     if (openBraces <= 0) {
       if (buffer.trim() !== "") {
         console.log(`${colors.gray}▶ executando...${colors.reset}`);
